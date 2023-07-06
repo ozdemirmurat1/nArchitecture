@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Hatalarý yakalar.Middleware
+// Hatalarý yakalar.Middleware yazdýk kendimiz elimine ettik. Production ortamýndaysa çalýþtýr. Ýstersen comment e alabilirsin.
 if (app.Environment.IsProduction())
     app.ConfigureCustomExceptionMiddleware();
 
