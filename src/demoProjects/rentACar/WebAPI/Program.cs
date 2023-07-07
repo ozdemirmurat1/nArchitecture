@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // Hatalarý yakalar.Middleware yazdýk kendimiz elimine ettik. Production ortamýndaysa çalýþtýr. Ýstersen comment e alabilirsin.
-if (app.Environment.IsProduction())
+//if (app.Environment.IsProduction())
     app.ConfigureCustomExceptionMiddleware();
 
 app.UseAuthorization();
