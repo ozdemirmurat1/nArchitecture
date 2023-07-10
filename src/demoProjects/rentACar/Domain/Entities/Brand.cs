@@ -11,6 +11,9 @@ namespace Domain.Entities
     {
         public string Name { get; set; }
 
+        public virtual ICollection<Model> Models { get; set; }
+
+        // entityFramework parametresiz ctor a ihtiyaç duyabilir.Belki ilerleyen versiyonlarda ihtiyaç yoktur.
         public Brand()
         {
             
