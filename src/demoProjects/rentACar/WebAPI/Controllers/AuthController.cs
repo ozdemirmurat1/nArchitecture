@@ -28,7 +28,8 @@ namespace WebAPI.Controllers
 
         private void SetRefreshTokenToCookie(RefreshToken refreshToken)
         {
-            CookieOptions cookieOptions=new() { HttpOnly = true,Expires=DateTime.Now.AddDays(7) };
-            Response.Cookies.Append("refreshToken",refreshToken.Token,cookieOptions);
+            CookieOptions cookieOptions = new() { HttpOnly = true, Expires = DateTime.Now.AddDays(7) };
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+        }
     }
 }
