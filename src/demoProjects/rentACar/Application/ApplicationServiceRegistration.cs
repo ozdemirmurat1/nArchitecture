@@ -1,5 +1,7 @@
 ﻿using Application.Features.Auths.Rules;
 using Application.Features.Brands.Rules;
+using Application.Services.AuthService;
+using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Validation;
 using FluentValidation;
 using MediatR;
@@ -30,9 +32,9 @@ namespace Application
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheRemovingBehavior<,>));
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
-
             // Validasyon için gerekli
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+            services.AddScoped<IAuthService, AuthManager>();
 
             return services;
 
