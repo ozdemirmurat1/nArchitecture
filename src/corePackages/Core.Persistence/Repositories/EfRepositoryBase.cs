@@ -17,19 +17,31 @@ public class EfRepositoryBase<TEntity,TEntityId ,TContext> : IAsyncRepository<TE
         Context = context;
     }
 
+    public IQueryable<TEntity> Query() => Context.Set<TEntity>();
     public TEntity Add(TEntity entity)
     {
-        throw new NotImplementedException();
+        entity.CreatedDate = DateTime.UtcNow;
+        Context.Add(entity);
+        Context.SaveChanges();
+        return entity;
     }
 
-    public Task<TEntity> AddAsync(TEntity entity)
+    public async Task<TEntity> AddAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        entity.CreatedDate = DateTime.UtcNow;
+        await Context.AddAsync(entity);
+        await Context.SaveChangesAsync();
+        return entity;
     }
 
     public ICollection<TEntity> AddRange(ICollection<TEntity> entities)
     {
-        throw new NotImplementedException();
+        foreach (TEntity entity in entities)
+            entity.CreatedDate = DateTime.UtcNow;
+        Context.AddRange(entities);
+        Context.SaveChanges();
+        return entities;
+        
     }
 
     public Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entity)

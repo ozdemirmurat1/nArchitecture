@@ -32,7 +32,7 @@ public interface IAsyncRepository<T,TEntityId> : IQuery<T> where T : Entity<TEnt
 
     Task<T> AddAsync(T entity);
 
-    Task<ICollection<T>> AddRangeAsync(ICollection<T> entity);
+    Task<ICollection<T>> AddRangeAsync(ICollection<T> entities);
     Task<T> UpdateAsync(T entity);
 
     Task<ICollection<T>> UpdateRangeAsync(ICollection<T> entity);
