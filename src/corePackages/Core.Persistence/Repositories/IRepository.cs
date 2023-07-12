@@ -24,7 +24,7 @@ public interface IRepository<T,TEntityId> : IQuery<T> where T : Entity<TEntityId
     );
 
     IPaginate<T> GetListByDynamic(
-        Dynamic.Dynamic,
+        Dynamic.Dynamic dynamic,
         Expression<Func<T, bool>>? predicate = null,
         Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
         int index = 0,
