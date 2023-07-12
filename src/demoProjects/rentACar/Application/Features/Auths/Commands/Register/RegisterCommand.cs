@@ -21,6 +21,17 @@ namespace Application.Features.Auths.Commands.Register
         public UserForRegisterDto UserForRegisterDto { get; set; }
         public string IpAddress { get; set; }
 
+        public RegisterCommand()
+        {
+            UserForRegisterDto = null;
+            IpAddress=string.Empty;
+        }
+
+        public RegisterCommand(UserForRegisterDto userForRegisterDto,string ipAddress)
+        {
+            UserForRegisterDto=userForRegisterDto;
+            IpAddress = ipAddress;
+        }
         public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisteredDto>
         {
             private readonly AuthBusinessRules _authBusinessRules;
