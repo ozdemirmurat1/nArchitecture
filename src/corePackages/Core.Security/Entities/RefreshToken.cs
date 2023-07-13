@@ -2,12 +2,12 @@
 
 namespace Core.Security.Entities;
 
-public class RefreshToken : Entity
+public class RefreshToken : Entity<int>
 {
     public int UserId { get; set; }
     public string Token { get; set; }
     public DateTime Expires { get; set; }
-    public DateTime Created { get; set; }
+    //public DateTime Created { get; set; }
     public string CreatedByIp { get; set; }
     public DateTime? Revoked { get; set; }
     public string? RevokedByIp { get; set; }
@@ -18,23 +18,26 @@ public class RefreshToken : Entity
     //public bool IsRevoked => Revoked != null;
     //public bool IsActive => !IsRevoked && !IsExpired;
 
-    public virtual User User { get; set; }
+    public virtual User User { get; set; } = null!;
 
     public RefreshToken()
     {
+        Token = string.Empty;
+        CreatedByIp=string.Empty;
     }
 
-    public RefreshToken(int id, string token, DateTime expires, DateTime created, string createdByIp, DateTime? revoked,
-                        string revokedByIp, string replacedByToken, string reasonRevoked)
+    public RefreshToken(int userId,string token,DateTime expires,string createdByIp)
     {
-        Id = id;
+        UserId = userId;
         Token = token;
         Expires = expires;
-        Created = created;
         CreatedByIp = createdByIp;
-        Revoked = revoked;
-        RevokedByIp = revokedByIp;
-        ReplacedByToken = replacedByToken;
-        ReasonRevoked = reasonRevoked;
+    }
+    public RefreshToken(int id, int userId, string token, DateTime expires, string createdByIp):base(id)
+    {
+        UserId=userId;
+        Token = token;
+        Expires = expires;
+        CreatedByIp = createdByIp;
     }
 }
