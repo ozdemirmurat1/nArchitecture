@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace Application.Features.Auths.Commands.Register
 {
     // RegisteredDto api den alacağımız dönüş
-    public class RegisterCommand:IRequest<RegisteredDto>
+    public class RegisterCommand:IRequest<RegisteredResponse>
     {
         public UserForRegisterDto UserForRegisterDto { get; set; }
         public string IpAddress { get; set; }
@@ -32,7 +32,7 @@ namespace Application.Features.Auths.Commands.Register
             UserForRegisterDto=userForRegisterDto;
             IpAddress = ipAddress;
         }
-        public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisteredDto>
+        public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisteredResponse>
         {
             private readonly AuthBusinessRules _authBusinessRules;
             private readonly IUserRepository _userRepository;

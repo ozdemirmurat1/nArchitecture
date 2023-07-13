@@ -18,7 +18,10 @@ public class JwtHelper : ITokenHelper
     public JwtHelper(IConfiguration configuration)
     {
         Configuration = configuration;
-        _tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+        const string configurationSection = "TokenOptions";
+        _tokenOptions = Configuration.GetSection(configurationSection).Get<TokenOptions>()
+                        ??
+                        throw new NullReferenceException($"\"{configurationSection}\" section cannot found in configuration.");
     }
 
     public AccessToken CreateToken(User user, IList<OperationClaim> operationClaims)
@@ -42,9 +45,8 @@ public class JwtHelper : ITokenHelper
         RefreshToken refreshToken = new()
         {
             UserId = user.Id,
-            Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+            Token = RandomRefreshToken(),
             Expires = DateTime.UtcNow.AddDays(7),
-            Created = DateTime.UtcNow,
             CreatedByIp = ipAddress
         };
 
@@ -74,5 +76,13 @@ public class JwtHelper : ITokenHelper
         claims.AddName($"{user.FirstName} {user.LastName}");
         claims.AddRoles(operationClaims.Select(c => c.Name).ToArray());
         return claims;
+    }
+
+    private string RandomRefreshToken()
+    {
+        byte[] numberByte= new byte[32];
+        using var random=RandomNumberGenerator.Create();
+        random.GetBytes(numberByte);
+        return Convert.ToBase64String(numberByte);
     }
 }
