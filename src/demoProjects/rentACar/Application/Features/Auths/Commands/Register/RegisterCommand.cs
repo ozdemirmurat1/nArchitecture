@@ -45,7 +45,7 @@ namespace Application.Features.Auths.Commands.Register
                 _authService = authService;
             }
 
-            public async Task<RegisteredDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
+            public async Task<RegisteredResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
             {
                 await _authBusinessRules.UserEmailShouldBeNotExists(request.UserForRegisterDto.Email);
                 
@@ -66,13 +66,13 @@ namespace Application.Features.Auths.Commands.Register
                 RefreshToken createdRefreshToken = await _authService.CreateRefreshToken(createdUser, request.IpAddress);
                 RefreshToken addedRefreshToken = await _authService.AddRefreshToken(createdRefreshToken);
 
-                RegisteredDto registeredDto = new()
+                RegisteredResponse registeredResponse = new()
                 {
-                    RefreshToken= addedRefreshToken,
-                    AccessToken= createdAccessToken,
+                    AccessToken = createdAccessToken,
+                    RefreshToken = addedRefreshToken
                 };
 
-                return registeredDto;
+                return registeredResponse;
             }
         }
     }

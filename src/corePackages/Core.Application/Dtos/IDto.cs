@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Application.Dtos
 {
-    internal interface IDto
+    public interface IDto
     {
     }
 }

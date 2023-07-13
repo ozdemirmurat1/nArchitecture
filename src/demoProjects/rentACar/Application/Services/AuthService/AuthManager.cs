@@ -1,8 +1,10 @@
-﻿using Application.Services.Repositories;
+﻿using Application.Features.Auths.Rules;
+using Application.Services.Repositories;
 using Core.Persistence.Paging;
 using Core.Security.Entities;
 using Core.Security.JWT;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +16,23 @@ namespace Application.Services.AuthService
 {
     public class AuthManager : IAuthService
     {
-        private readonly IUserOperationClaimRepository _userOperationClaimRepository; 
-        private readonly ITokenHelper _tokenHelper;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ITokenHelper _tokenHelper;
+        private readonly TokenOptions _tokenOptions;
+        private readonly AuthBusinessRules _authBusinessRules;
+        private readonly IUserOperationClaimRepository _userOperationClaimRepository; 
+        
+        
 
-        public AuthManager(IUserOperationClaimRepository userOperationClaimRepository, ITokenHelper tokenHelper, IRefreshTokenRepository refreshTokenRepository)
+        public AuthManager(IUserOperationClaimRepository userOperationClaimRepository,IRefreshTokenRepository refreshTokenRepository,ITokenHelper tokenHelper,IConfiguration configuration,AuthBusinessRules authBusinessRules)
         {
             _userOperationClaimRepository = userOperationClaimRepository;
-            _tokenHelper = tokenHelper;
             _refreshTokenRepository = refreshTokenRepository;
+            _tokenHelper = tokenHelper;
+            _authBusinessRules = authBusinessRules;
+
+            const string tokenOptionsConfigurationSection = "TokenOptions";
+            _tokenOptions=configuration.GetSection(tokenOptionsConfigurationSection).Get<TokenOptions>() ?? throw new NullReferenceException($"\"{tokenOptionsConfigurationSection}\" section cannot found in configuration");
         }
 
         public async Task<RefreshToken> AddRefreshToken(RefreshToken refreshToken)
@@ -45,6 +55,31 @@ namespace Application.Services.AuthService
         {
             RefreshToken refreshToken = _tokenHelper.CreateRefreshToken(user, ipAddress); 
             return await Task.FromResult(refreshToken);
+        }
+
+        public Task DeleteOldRefreshTokens(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RefreshToken> GetRefreshTokenByToken(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, string ipAddress, string reason)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RevokeRefreshToken(RefreshToken refreshToken, string ipAddress, string reason = null, string replacedByToken = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RefreshToken> RotateRefreshToken(User user, RefreshToken refreshToken, string ipAddress)
+        {
+            throw new NotImplementedException();
         }
     }
 }
