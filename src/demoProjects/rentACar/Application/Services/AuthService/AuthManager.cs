@@ -43,9 +43,12 @@ namespace Application.Services.AuthService
 
         public async Task<AccessToken> CreateAccessToken(User user)
         {
-           IPaginate<UserOperationClaim> userOperationClaims=await _userOperationClaimRepository.GetListAsync(u=>u.UserId==user.Id,include:u=>u.Include(u=>u.OperationClaim));
-
-            IList<OperationClaim> operationClaims = userOperationClaims.Items.Select(u => new OperationClaim { Id = u.OperationClaim.Id, Name = u.OperationClaim.Name }).ToList();
+            IList<OperationClaim> operationClaims = await _userOperationClaimRepository
+                 .Query()
+                 .AsNoTracking()
+                 .Where(p => p.UserId == user.Id)
+                 .Select(p => new OperationClaim { Id = p.OperationClaimId, Name = p.OperationClaim.Name })
+                 .ToListAsync();
 
             AccessToken accessToken=_tokenHelper.CreateToken(user,operationClaims);
             return accessToken;
@@ -57,29 +60,52 @@ namespace Application.Services.AuthService
             return await Task.FromResult(refreshToken);
         }
 
-        public Task DeleteOldRefreshTokens(int userId)
+        public async Task DeleteOldRefreshTokens(int userId)
         {
-            throw new NotImplementedException();
+            List<RefreshToken> refreshTokens=await _refreshTokenRepository
+                .Query()
+                .AsNoTracking()
+                .Where(
+                    r=>
+                        r.UserId==userId
+                        && r.Revoked==null
+                        && r.Expires>=DateTime.UtcNow
+                        && r.CreatedDate.AddDays(_tokenOptions.RefreshTokenTTL)>=DateTime.UtcNow)
+                .ToListAsync();
+
+            await _refreshTokenRepository.DeleteRangeAsync(refreshTokens);
         }
 
-        public Task<RefreshToken> GetRefreshTokenByToken(string token)
+        public async Task<RefreshToken> GetRefreshTokenByToken(string token)
         {
-            throw new NotImplementedException();
+            RefreshToken? refreshToken=await _refreshTokenRepository.GetAsync(predicate: r=>r.Token==token);
+            return refreshToken;
         }
 
-        public Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, string ipAddress, string reason)
+        public async Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, string ipAddress, string reason)
         {
-            throw new NotImplementedException();
+            RefreshToken? childToken = await _refreshTokenRepository.GetAsync(predicate: r => r.Token == refreshToken.ReplacedByToken);
+
+            if(childToken?.Revoked!=null && childToken.Expires<=DateTime.UtcNow) 
+                await RevokeRefreshToken(childToken, ipAddress, reason);
+            else
+                await RevokeDescendantRefreshTokens(refreshToken:childToken!,ipAddress, reason);
         }
 
-        public Task RevokeRefreshToken(RefreshToken refreshToken, string ipAddress, string reason = null, string replacedByToken = null)
+        public async Task RevokeRefreshToken(RefreshToken refreshToken, string ipAddress, string? reason = null, string? replacedByToken = null)
         {
-            throw new NotImplementedException();
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevokedByIp = ipAddress;
+            refreshToken.ReasonRevoked = reason;
+            refreshToken.ReplacedByToken = replacedByToken;
+            await _refreshTokenRepository.UpdateAsync(refreshToken);
         }
 
-        public Task<RefreshToken> RotateRefreshToken(User user, RefreshToken refreshToken, string ipAddress)
+        public async Task<RefreshToken> RotateRefreshToken(User user, RefreshToken refreshToken, string ipAddress)
         {
-            throw new NotImplementedException();
+            RefreshToken newRefreshToken = _tokenHelper.CreateRefreshToken(user, ipAddress);
+            await RevokeRefreshToken(refreshToken, ipAddress, reason: "Replaced by new token", newRefreshToken.Token);
+            return newRefreshToken;
         }
     }
 }
