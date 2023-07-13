@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services.Repositories
 {
-    public interface IUserRepository:IAsyncRepository<User>,IRepository<User>
+    public interface IUserRepository:IAsyncRepository<User,int>,IRepository<User,int>
     {
 
     }
