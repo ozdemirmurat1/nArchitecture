@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Model:Entity
+    public class Model:Entity<int>
     {
         public int BrandId { get; set; }
         public string Name { get; set; }
@@ -22,13 +22,12 @@ namespace Domain.Entities
             
         }
 
-        public Model(int id,int brandId,string name,decimal dailyPrice,string imageUrl):this() 
+        public Model(int id,int brandId,string name,decimal dailyPrice,string imageUrl):base(id)
         {
             Name = name;
             DailyPrice = dailyPrice;
             ImageUrl = imageUrl;
             BrandId = brandId;
-            Id = id;
         }
 
 
