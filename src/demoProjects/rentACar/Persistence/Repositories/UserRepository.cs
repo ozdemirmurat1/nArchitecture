@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
-    public class UserRepository : EfRepositoryBase<User, BaseDbContext>, IUserRepository
+    public class UserRepository : EfRepositoryBase<User,int, BaseDbContext>, IUserRepository
     {
         public UserRepository(BaseDbContext context) : base(context)
         {
