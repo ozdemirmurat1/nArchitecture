@@ -12,9 +12,9 @@
     <Folder Include="Features\Models\Commands\" />
     <Folder Include="Features\Models\Constants\" />
     <Folder Include="Features\Models\Rules\" />
-    <Folder Include="Features\UserOperationClaims\Commands\" />
-    <Folder Include="Features\UserOperationClaims\Queries\" />
     <Folder Include="Features\UserOperationClaims\Profiles\" />
+    <Folder Include="Features\UserOperationClaims\Queries\GetById\" />
+    <Folder Include="Features\UserOperationClaims\Queries\GetList\" />
   </ItemGroup>
 
 	<ItemGroup>
