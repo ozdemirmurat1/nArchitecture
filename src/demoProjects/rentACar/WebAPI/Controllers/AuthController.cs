@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
                 IpAddress = GetIpAddress()
             };
 
-            RegisteredDto result = await Mediator.Send(registerCommand);
+            RegisteredResponse result = await Mediator.Send(registerCommand);
             SetRefreshTokenToCookie(result.RefreshToken);
             return Created("", result.AccessToken);
         }
