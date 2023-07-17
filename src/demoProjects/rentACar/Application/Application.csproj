@@ -16,8 +16,6 @@
     <Folder Include="Features\OperationClaims\Queries\" />
     <Folder Include="Features\OperationClaims\Profiles\" />
     <Folder Include="Features\UserOperationClaims\Profiles\" />
-    <Folder Include="Features\UserOperationClaims\Queries\GetById\" />
-    <Folder Include="Features\UserOperationClaims\Queries\GetList\" />
   </ItemGroup>
 
 	<ItemGroup>
