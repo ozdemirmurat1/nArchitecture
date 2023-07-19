@@ -15,7 +15,6 @@
     <Folder Include="Features\OperationClaims\Commands\" />
     <Folder Include="Features\OperationClaims\Queries\" />
     <Folder Include="Features\OperationClaims\Profiles\" />
-    <Folder Include="Features\UserOperationClaims\Profiles\" />
   </ItemGroup>
 
 	<ItemGroup>
