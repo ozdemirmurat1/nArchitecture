@@ -31,6 +31,6 @@ namespace Application.Services.OperationClaims
 
         Task<OperationClaim> AddAsync(OperationClaim operationClaim);
         Task<OperationClaim> UpdateAsync(OperationClaim operationClaim);
-        Task<OperationClaim> DeletAsync(OperationClaim operationClaim,bool permanent=false);
+        Task<OperationClaim> DeleteAsync(OperationClaim operationClaim,bool permanent=false);
     }
 }

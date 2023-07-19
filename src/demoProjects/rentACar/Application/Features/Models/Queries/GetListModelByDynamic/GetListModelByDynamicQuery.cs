@@ -35,7 +35,7 @@ namespace Application.Features.Models.Queries.GetListModelByDynamic
             {
                 IPaginate<Model> models = await _modelRepository.GetListByDynamicAsync(request.Dynamic,include:
                                                  m => m.Include(c => c.Brand),
-                                                 index: request.PageRequest.Page,
+                                                 index: request.PageRequest.PageIndex,
                                                  size: request.PageRequest.PageSize
                                                  );
 

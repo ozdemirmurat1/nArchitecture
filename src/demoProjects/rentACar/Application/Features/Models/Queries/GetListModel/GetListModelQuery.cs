@@ -33,7 +33,7 @@ namespace Application.Features.Models.Queries.GetListModel
             {
                IPaginate<Model> models=await  _modelRepository.GetListAsync(include:
                                                 m=>m.Include(c=>c.Brand),
-                                                index:request.PageRequest.Page,
+                                                index:request.PageRequest.PageIndex,
                                                 size:request.PageRequest.PageSize
                                                 );
 
