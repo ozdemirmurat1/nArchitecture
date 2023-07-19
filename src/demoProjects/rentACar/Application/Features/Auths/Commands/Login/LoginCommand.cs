@@ -1,4 +1,5 @@
 ﻿using Application.Features.Auths.Rules;
+using Application.Services.AuthenticatorService;
 using Application.Services.AuthService;
 using Core.Application.Dtos;
 using MediatR;
@@ -33,7 +34,7 @@ namespace Application.Features.Auths.Commands.Login
             private readonly AuthBusinessRules _authBusinessRules;
             private readonly IAuthenticatorService _authenticatorService;
             private readonly IAuthService _authService;
-            private readonly IUserService _userService;
+            //private readonly IUserService _userService;
             public Task<LoggedResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
             {
                 throw new NotImplementedException();
