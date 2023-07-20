@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Text.Json;
 
 namespace Core.Application.Pipelines.Caching;
 
@@ -17,21 +19,38 @@ public class CacheRemovingBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
         _logger = logger;
     }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-                                        RequestHandlerDelegate<TResponse> next)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        TResponse response;
-        if (request.BypassCache) return await next();
+        if(request.BypassCache)
+            return await next();
 
-        async Task<TResponse> GetResponseAndRemoveCache()
+        TResponse response = await next();
+
+        if (request.CacheGroupKey != null)
         {
-            response = await next();
-            await _cache.RemoveAsync(request.CacheKey, cancellationToken);
-            return response;
+            byte[]? cachedGroup=await _cache.GetAsync(request.CacheGroupKey, cancellationToken);
+            if(cachedGroup != null)
+            {
+                HashSet<string> keysInGroup=JsonSerializer.Deserialize<HashSet<string>>(Encoding.Default.GetString(cachedGroup))!;
+                foreach (string key in keysInGroup)
+                {
+                    await _cache.RemoveAsync(key,cancellationToken);
+                    _logger.LogInformation($"Removed Cache -> {key}");
+                }
+
+                await _cache.RemoveAsync(request.CacheGroupKey,cancellationToken);
+                _logger.LogInformation($"Removed Cache -> {request.CacheGroupKey}");
+
+                await _cache.RemoveAsync(key: $"{request.CacheGroupKey}SlidingExpiration", cancellationToken);
+                _logger.LogInformation($"Removed Cache -> {request.CacheGroupKey}SlidingExpiration");
+            }
         }
 
-        response = await GetResponseAndRemoveCache();
-        _logger.LogInformation($"Removed Cache -> {request.CacheKey}");
+        if (request.CacheKey!=null)
+        {
+            await _cache.RemoveAsync(request.CacheKey, cancellationToken);
+            _logger.LogInformation($"Removed Cache -> {request.CacheKey}");
+        }
 
         return response;
     }
