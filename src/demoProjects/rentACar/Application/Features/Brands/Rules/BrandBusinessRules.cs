@@ -1,4 +1,5 @@
 ﻿using Application.Services.Repositories;
+using Core.Application.Rules;
 using Core.CrossCuttingConcerns.Exceptions;
 using Core.CrossCuttingConcerns.Exceptions.Types;
 using Core.Persistence.Paging;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Brands.Rules
 {
-    public class BrandBusinessRules
+    public class BrandBusinessRules : BaseBusinessRules
     {
         private readonly IBrandRepository _brandRepository;
 
