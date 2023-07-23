@@ -12,9 +12,7 @@
     <Folder Include="Features\Models\Commands\" />
     <Folder Include="Features\Models\Constants\" />
     <Folder Include="Features\Models\Rules\" />
-    <Folder Include="Features\Users\Commands\Delete\" />
     <Folder Include="Features\Users\Commands\UpdateFromAuth\" />
-    <Folder Include="Features\Users\Commands\Update\" />
     <Folder Include="Features\Users\Queries\" />
     <Folder Include="Features\Users\Profiles\" />
   </ItemGroup>
