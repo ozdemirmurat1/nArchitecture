@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Application.Features.Auths.Commands.EnableEmailAuthenticator
 {
@@ -64,7 +65,9 @@ namespace Application.Features.Auths.Commands.EnableEmailAuthenticator
 
                 _mailService.SendMail(new Mail
                 {
-                    
+                    ToList = toEmailList,
+                    Subject = "Verify Your Email - NArchitecture",
+                    TextBody = $"Click on the link to verify your email: {request.VerifyEmailUrlPrefix}?ActivationKey={HttpUtility.UrlEncode(addedEmailAuthenticator.ActivationKey)}"
                 });
             }
         }
