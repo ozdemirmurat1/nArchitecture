@@ -23,7 +23,7 @@ namespace Application.Features.Auths.Commands.Register
 
         public RegisterCommand()
         {
-            UserForRegisterDto = null;
+            UserForRegisterDto = null!;
             IpAddress=string.Empty;
         }
 
