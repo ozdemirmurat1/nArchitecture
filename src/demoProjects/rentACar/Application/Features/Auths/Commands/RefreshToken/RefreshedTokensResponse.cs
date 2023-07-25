@@ -7,24 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Auths.Commands.Register
+namespace Application.Features.Auths.Commands.RefreshToken
 {
-    public class RegisteredResponse:IResponse
+    public class RefreshedTokensResponse:IResponse
     {
-        public AccessToken AccessToken { get;set; }
-
+        public AccessToken AccessToken { get; set; }
         public Core.Security.Entities.RefreshToken RefreshToken { get; set; }
 
-        public RegisteredResponse()
+        public RefreshedTokensResponse()
         {
             AccessToken = null!;
             RefreshToken = null!;
         }
 
-        public RegisteredResponse(AccessToken accessToken, Core.Security.Entities.RefreshToken refreshToken)
+        public RefreshedTokensResponse(AccessToken accessToken, Core.Security.Entities.RefreshToken refreshToken)
         {
-            AccessToken=accessToken;
-            RefreshToken=refreshToken;
+            AccessToken= accessToken;
+            RefreshToken= refreshToken;
         }
     }
 }

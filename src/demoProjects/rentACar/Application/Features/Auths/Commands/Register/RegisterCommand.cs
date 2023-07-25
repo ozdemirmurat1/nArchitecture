@@ -63,8 +63,8 @@ namespace Application.Features.Auths.Commands.Register
 
                 User createdUser = await _userRepository.AddAsync(newUser);
                 AccessToken createdAccessToken=await _authService.CreateAccessToken(createdUser);
-                RefreshToken createdRefreshToken = await _authService.CreateRefreshToken(createdUser, request.IpAddress);
-                RefreshToken addedRefreshToken = await _authService.AddRefreshToken(createdRefreshToken);
+                Core.Security.Entities.RefreshToken createdRefreshToken = await _authService.CreateRefreshToken(createdUser, request.IpAddress);
+                Core.Security.Entities.RefreshToken addedRefreshToken = await _authService.AddRefreshToken(createdRefreshToken);
 
                 RegisteredResponse registeredResponse = new()
                 {

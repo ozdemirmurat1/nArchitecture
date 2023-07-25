@@ -14,7 +14,7 @@ namespace Application.Features.Auths.Commands.Login
     {
         public AccessToken? AccessToken { get; set; }
 
-        public RefreshToken? RefreshToken { get; set; }
+        public Core.Security.Entities.RefreshToken? RefreshToken { get; set; }
 
         public AuthenticatorType? RequiredAuthenticatorType { get; set; }
 
