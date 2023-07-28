@@ -76,10 +76,10 @@ namespace Application.Services.AuthService
             await _refreshTokenRepository.DeleteRangeAsync(refreshTokens);
         }
 
-        public async Task<RefreshToken> GetRefreshTokenByToken(string token)
+        public async Task<RefreshToken?> GetRefreshTokenByToken(string token)
         {
             RefreshToken? refreshToken=await _refreshTokenRepository.GetAsync(predicate: r=>r.Token==token);
-            return refreshToken;
+            return refreshToken!;
         }
 
         public async Task RevokeDescendantRefreshTokens(RefreshToken refreshToken, string ipAddress, string reason)

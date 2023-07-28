@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.CrossCuttingConcerns.Exceptions;
+using Core.Security.Enums;
+using MimeKit;
 
 namespace Application.Services.AuthenticatorService
 {
@@ -61,14 +63,42 @@ namespace Application.Services.AuthenticatorService
             return otpAuthenticator;
         }
 
-        public Task SendAuthenticatorCode(User user)
+        public async Task SendAuthenticatorCode(User user)
         {
-            throw new NotImplementedException();
+            if (user.AuthenticatorType is AuthenticatorType.Email)
+                await SendAuthenticatorCodeWithEmail(user);
         }
 
-        public Task VerifyAuthenticatorCode(User user, string authenticatorCode)
+        public async Task VerifyAuthenticatorCode(User user, string authenticatorCode)
         {
-            throw new NotImplementedException();
+            if(user.AuthenticatorType is AuthenticatorType.Email)
+                await VerifyAuthenticatorCodeWithEmail(user, authenticatorCode);
+            else if(user.AuthenticatorType is AuthenticatorType.Otp)
+                await VerifyAuthenticatorCodeWithOtp(user,authenticatorCode);
+        }
+
+        private async Task SendAuthenticatorCodeWithEmail(User user)
+        {
+            EmailAuthenticator? emailAuthenticator=await _emailAuthenticatorRepository.GetAsync(predicate: e=>e.UserId == user.Id);
+
+            if (emailAuthenticator is null)
+                throw new NotFoundException("Email Authenticator Not Found");
+            if (!emailAuthenticator.IsVerified)
+                throw new BusinessException("Email Authenticator must be verified");
+
+            string authenticatorCode = await _emailAuthenticatorHelper.CreateEmailActivationCode();
+            emailAuthenticator.ActivationKey = authenticatorCode;
+            await _emailAuthenticatorRepository.UpdateAsync(emailAuthenticator);
+
+            var toEmailList = new List<MailboxAddress> { new(name: $"{user.FirstName} {user.LastName}", user.Email) };
+
+            _mailService.SendMail(
+                new Mail
+                {
+                    ToList=toEmailList,
+                    Subject="Authenticator Code - NArchitecture",
+                    TextBody=$"Enter your authenticator code : {authenticatorCode}"
+                });
         }
 
         private async Task VerifyAuthenticatorCodeWithOtp(User user,string authenticatorCode)
@@ -81,6 +111,20 @@ namespace Application.Services.AuthenticatorService
             bool result=await _otpAuthenticatorHelper.VerifyCode(otpAuthenticator.SecretKey, authenticatorCode);
             if (!result)
                 throw new BusinessException("Authenticator code is invalid");
+        }
+
+        private async Task VerifyAuthenticatorCodeWithEmail(User user,string authenticatorCode)
+        {
+            EmailAuthenticator? emailAuthenticator=await _emailAuthenticatorRepository.GetAsync(predicate: e=>e.UserId==user.Id);
+
+            if (emailAuthenticator is null)
+                throw new NotFoundException("Email Authenticator not found.");
+
+            if (emailAuthenticator.ActivationKey != authenticatorCode)
+                throw new BusinessException("Authenticator Code is Invalid.");
+
+            emailAuthenticator.ActivationKey = null;
+            await _emailAuthenticatorRepository.UpdateAsync(emailAuthenticator);
         }
     }
 }
