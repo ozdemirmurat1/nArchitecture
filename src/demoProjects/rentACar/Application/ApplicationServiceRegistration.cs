@@ -2,6 +2,7 @@
 using Application.Features.Brands.Rules;
 using Application.Services.AuthenticatorService;
 using Application.Services.AuthService;
+using Application.Services.UsersService;
 using Core.Application.Pipelines.Authorization;
 using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Logging;
@@ -49,7 +50,7 @@ namespace Application
             services.AddSingleton<IElasticSearch, ElasticSearchManager>();
             services.AddScoped<IAuthService, AuthManager>();
             services.AddScoped<IAuthenticatorService, AuthenticatorManager>();
-            //services.AddScoped<IUserService, UserManager>();
+            services.AddScoped<IUserService, UserManager>();
 
             return services;
 
