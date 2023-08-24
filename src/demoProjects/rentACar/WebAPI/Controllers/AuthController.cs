@@ -1,8 +1,6 @@
-﻿using Application.Features.Auths.Commands.Register;
-using Application.Features.Auths.Dtos;
-using Core.Security.Dtos;
+﻿using Application.Features.Auths.Commands.Login;
+using Core.Application.Dtos;
 using Core.Security.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -11,25 +9,33 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AuthController : BaseController
     {
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody]  UserForRegisterDto userForRegisterDto)
-        {
-            // Oluşan refreshToken'ı cookie ye eklemeliyiz.
-            RegisterCommand registerCommand = new()
-            {
-                UserForRegisterDto = userForRegisterDto,
-                IpAddress = GetIpAddress()
-            };
+        private readonly WebApiConfiguration _configuration;
 
-            RegisteredResponse result = await Mediator.Send(registerCommand);
-            SetRefreshTokenToCookie(result.RefreshToken);
-            return Created("", result.AccessToken);
+        public AuthController(IConfiguration configuration)
+        {
+            const string configurationSection = "WebAPIConfiguration";
+            _configuration =
+                configuration.GetSection(configurationSection).Get<WebApiConfiguration>()
+                ?? throw new NullReferenceException($"\"{configurationSection}\" section cannot found in configuration.");
         }
 
-        private void SetRefreshTokenToCookie(RefreshToken refreshToken)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
         {
-            CookieOptions cookieOptions = new() { HttpOnly = true, Expires = DateTime.Now.AddDays(7) };
-            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+            LoginCommand loginCommand = new() { UserForLoginDto = userForLoginDto, IpAddress = GetIpAddress() };
+            LoggedResponse result = await Mediator.Send(loginCommand);
+
+            if (result.RefreshToken is not null)
+                setRefreshTokenToCookie(result.RefreshToken);
+
+            return Ok(result.ToHttpResponse());
+        }
+
+        private void setRefreshTokenToCookie(RefreshToken refreshToken)
+        {
+            CookieOptions cookieOptions = new() { HttpOnly = true, Expires = DateTime.UtcNow.AddDays(7) };
+            Response.Cookies.Append(key: "refreshToken", refreshToken.Token, cookieOptions);
         }
     }
+
 }

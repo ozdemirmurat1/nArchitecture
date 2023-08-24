@@ -6,11 +6,13 @@ namespace WebAPI.Controllers
 {
     public class BaseController : ControllerBase
     {
-        protected IMediator? Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>() ?? throw new InvalidOperationException("IMediator cannot be retrieved from request services.");
+        protected IMediator Mediator => _mediator ??= 
+            HttpContext.RequestServices.GetService<IMediator>() 
+            ?? throw new InvalidOperationException("IMediator cannot be retrieved from request services.");
 
         private IMediator? _mediator;
 
-        protected string? GetIpAddress()
+        protected string GetIpAddress()
         {
             string ipAddress = Request.Headers.ContainsKey("X-Forwarded-For")
             ? Request.Headers["X-Forwarded-For"].ToString()
