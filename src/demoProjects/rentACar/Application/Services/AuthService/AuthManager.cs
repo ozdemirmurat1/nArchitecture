@@ -1,16 +1,9 @@
 ﻿using Application.Features.Auths.Rules;
 using Application.Services.Repositories;
-using Core.Persistence.Paging;
 using Core.Security.Entities;
 using Core.Security.JWT;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services.AuthService
 {

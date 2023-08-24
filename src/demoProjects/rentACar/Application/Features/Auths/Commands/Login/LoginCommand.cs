@@ -2,7 +2,7 @@
 using Application.Services.AuthenticatorService;
 using Application.Services.AuthService;
 using Application.Services.UsersService;
-using Core.Application.Dtos;
+using Core.Security.Dtos;
 using Core.Security.Entities;
 using Core.Security.Enums;
 using Core.Security.JWT;
