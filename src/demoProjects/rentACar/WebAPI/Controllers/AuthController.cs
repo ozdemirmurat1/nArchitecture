@@ -1,7 +1,11 @@
 ﻿using Application.Features.Auths.Commands.Login;
+using Application.Features.Auths.Commands.RefreshToken;
+using Application.Features.Auths.Commands.Register;
 using Core.Application.Dtos;
+using Core.Security.Dtos;
 using Core.Security.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace WebAPI.Controllers
 {
@@ -20,7 +24,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
+        public async Task<IActionResult> Login([FromBody] Core.Security.Dtos.UserForLoginDto userForLoginDto)
         {
             LoginCommand loginCommand = new() { UserForLoginDto = userForLoginDto, IpAddress = GetIpAddress() };
             LoggedResponse result = await Mediator.Send(loginCommand);
@@ -30,6 +34,35 @@ namespace WebAPI.Controllers
 
             return Ok(result.ToHttpResponse());
         }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] Core.Security.Dtos.UserForRegisterDto userForRegisterDto)
+        {
+            RegisterCommand registerCommand=new() { UserForRegisterDto=userForRegisterDto, IpAddress = GetIpAddress() };
+            RegisteredResponse result=await Mediator.Send(registerCommand);
+            setRefreshTokenToCookie(result.RefreshToken);
+            return Created(uri: "", result.AccessToken);
+        }
+
+        [HttpGet("RefreshToken")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            RefreshTokenCommand refreshTokenCommand = new() { RefreshToken = getRefreshTokenFromCookies(), IpAddress = GetIpAddress() };
+
+            RefreshedTokensResponse result = await Mediator.Send(refreshTokenCommand);
+            setRefreshTokenToCookie(result.RefreshToken);
+            return Created(uri: "", result.AccessToken);
+        }
+
+        [HttpPut("RevokeToken")]
+        public async Task<IActionResult> RevokeToken([FromBody(EmptyBodyBehavior =EmptyBodyBehavior.Allow)] string? refreshToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string getRefreshTokenFromCookies() =>
+            Request.Cookies["refreshToken"] ?? throw new ArgumentException("Refresh token is not found in request cookies.");
+
 
         private void setRefreshTokenToCookie(RefreshToken refreshToken)
         {
