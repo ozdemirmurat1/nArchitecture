@@ -3,11 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Formatting.Elasticsearch;
 using Serilog.Sinks.Elasticsearch;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.CrossCuttingConcerns.Logging.Serilog.Logger
 {
