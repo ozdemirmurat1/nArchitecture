@@ -3,7 +3,6 @@ using Application.Features.Models.Queries.GetListModel;
 using Application.Features.Models.Queries.GetListModelByDynamic;
 using Core.Application.Requests;
 using Core.Persistence.Dynamic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers

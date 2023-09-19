@@ -9,7 +9,6 @@ using Application.Features.Auths.Commands.VerifyOtpAuthenticator;
 using Core.Security.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using ZstdSharp.Unsafe;
 
 namespace WebAPI.Controllers
 {
